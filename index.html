@@ -27,9 +27,16 @@
               </ul>
               <div class="navbar-form navbar-left">
                 <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Search">
+                  <input type="text" class="form-control" placeholder="Search" ng-model="searchText">
                 </div>
-                <button type="submit" class="btn btn-default">Sort By Votes</button>
+                <button type="submit" class="btn btn-default"><li class="dropdown no-bullet">
+                    <a class="sort-a" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Sort By {{sortingBy}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="changeSort('votes')" href="#">Votes</a></li>
+                        <li><a ng-click="changeSort('date')" href="#">Date</a></li>
+                        <li><a ng-click="changeSort('title')" href="#">Title</a></li>
+                    </ul>
+                </li></button>
             </div>
             </div><!-- /.navbar-collapse -->
           </div><!-- /.container-fluid -->
@@ -50,14 +57,13 @@
             </form>
 
 
-            <div ng-cloak ng-repeat="post in posts" class="row post">
-                <div>
+            <div ng-cloak ng-repeat="post in posts | orderBy: sortingBy:true | filter: searchText" class="row post"> <!--   -->
                     <div class="col-md-2 img">
                         <img class="picture" ng-src="{{post.img}}" />
                     </div>
                     <div class="col-md-10 content">
                         <div class="title">
-                            <p>{{post.title}} | <i ng-click="upVote($index)" class="fa fa-arrow-up" aria-hidden="true"></i> <i ng-click="downVote($index)" class="fa fa-arrow-down" aria-hidden="true"></i> <span ng-class="{green: post.votes > 0, red: post.votes < 0}">{{post.votes}}</span></p>
+                            <p>{{post.title}} | <i ng-click="upVote(post.title)" class="fa fa-arrow-up" aria-hidden="true"></i> <i ng-click="downVote(post.title)" class="fa fa-arrow-down" aria-hidden="true"></i> <span ng-class="{green: post.votes > 0, red: post.votes < 0}">{{post.votes}}</span></p>
                         </div>
                         <p class="author">
                             By {{post.author}}
@@ -66,32 +72,39 @@
                             {{post.description}}
                         </div>
                         <div class="footer">
-                            <i class="fa fa-calendar" aria-hidden="true"></i> <span am-time-ago="post.date"></span> | <i class="fa fa-comment" aria-hidden="true"></i> {{post.comments.length}} <ng-pluralize count="post.comments.length" when="{'1': 'comment', 'other': 'comments'}"></ng-pluralize> | <span ng-click="addComment()"> <i class="fa fa-pencil" aria-hidden="true"> </i> Add Comment</span>
+                            <i class="fa fa-calendar" aria-hidden="true"></i> <span am-time-ago="post.date"></span> | <span ng-click="showPostComments()"><i class="fa fa-comment" aria-hidden="true"></i> {{post.comments.length}} <ng-pluralize count="post.comments.length" when="{'1': 'comment', 'other': 'comments'}"></ng-pluralize> </span>| <span ng-click="addComment(post.title)"> <i class="fa fa-pencil" aria-hidden="true"> </i> Add Comment</span>
+                            <form name="commentForm" ng-show="showCommentForm" ng-submit="submitComment(post.title, commentForm)" class="comment_form">
+                                <br>
+                                <label for="author">Author</label>
+                                <input ng-minlength="2" name="author" ng-model="comment.author" type="text"  required class="form-control">
+                                <label for="comment">Comment </label>
+                                <input ng-minlength="2" name="comment" ng-model="comment.comment" type="text"  required class="form-control">
+                                <input type="submit" value="Add Comment">
+                            </form>
+                            <div ng-show="showComments">
+                                <div class="comments" ng-repeat="comment in post.comments">
+                                    <br>
+                                    <p>
+                                        <strong>{{comment.author}}</strong> - {{comment.comment}}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-
-                    <form ng-show="showCommentForm">
-                        <label for="author">Author</label>
-                        <input ng-minlength="2" name="author" ng-model="post.title" type="text"  required class="form-control">
-                        <label for="comment">Comment </label>
-                        <input ng-minlength="2" name="comment" ng-model="post.author" type="text"  required class="form-control">
-                    </form>
-
-                </div>
             </div>
         </div>
 
 
 
 
-        <!-- <script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script> -->
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
         <script src="https://use.fontawesome.com/47c4710be2.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>
         <script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment.min.js" charset="utf-8"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/0.10.3/angular-moment.min.js" charset="utf-8"></script>
         <script src="app.js" charset="utf-8"></script>
-        <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" charset="utf-8"></script> -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" charset="utf-8"></script>
     </body>
 </html>
