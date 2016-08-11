@@ -1,4 +1,4 @@
-angular.module('redditClone', [])
+angular.module('redditClone', ['angularMoment'])
 
 .controller('redditController', function ($scope) {
   $scope.posts = []
@@ -16,7 +16,9 @@ angular.module('redditClone', [])
       author: $scope.post.author,
       img: $scope.post.url,
       description: $scope.post.description,
-      votes: 0
+      votes: 0,
+      date: new Date().getTime(),
+      comments: []
     })
 
     formName.$setPristine()
@@ -31,5 +33,15 @@ angular.module('redditClone', [])
   $scope.downVote = function (index) {
     $scope.posts[index].votes --
   }
+
+  $scope.submitComment = function (index) {
+    $scope.posts[index].comments.push()
+  }
+
+  $scope.addComment = function () {
+    $scope.showCommentForm = true
+  }
+
+
 
 })

@@ -51,22 +51,32 @@
 
 
             <div ng-cloak ng-repeat="post in posts" class="row post">
-                <div class="col-md-2 img">
-                    <img class="picture" ng-src="{{post.img}}" />
-                </div>
-                <div class="col-md-10 content">
-                    <div class="title">
-                        <p>{{post.title}} | <i ng-click="upVote($index)" class="fa fa-arrow-up" aria-hidden="true"></i> <i ng-click="downVote($index)" class="fa fa-arrow-down" aria-hidden="true"></i> <span ng-class="{green: post.votes > 0, red: post.votes < 0}">{{post.votes}}</span></p>
+                <div>
+                    <div class="col-md-2 img">
+                        <img class="picture" ng-src="{{post.img}}" />
                     </div>
-                    <p class="author">
-                        {{post.author}}
-                    </p>
-                    <div class="description">
-                        {{post.description}}
+                    <div class="col-md-10 content">
+                        <div class="title">
+                            <p>{{post.title}} | <i ng-click="upVote($index)" class="fa fa-arrow-up" aria-hidden="true"></i> <i ng-click="downVote($index)" class="fa fa-arrow-down" aria-hidden="true"></i> <span ng-class="{green: post.votes > 0, red: post.votes < 0}">{{post.votes}}</span></p>
+                        </div>
+                        <p class="author">
+                            By {{post.author}}
+                        </p>
+                        <div class="description">
+                            {{post.description}}
+                        </div>
+                        <div class="footer">
+                            <i class="fa fa-calendar" aria-hidden="true"></i> <span am-time-ago="post.date"></span> | <i class="fa fa-comment" aria-hidden="true"></i> {{post.comments.length}} <ng-pluralize count="post.comments.length" when="{'1': 'comment', 'other': 'comments'}"></ng-pluralize> | <span ng-click="addComment()"> <i class="fa fa-pencil" aria-hidden="true"> </i> Add Comment</span>
+                        </div>
                     </div>
-                    <div class="footer">
-                        <i class="fa fa-calendar" aria-hidden="true"></i> Date | <i class="fa fa-comment" aria-hidden="true"></i> 2 Comments | <i class="fa fa-pencil" aria-hidden="true"></i> Add Comment
-                    </div>
+
+
+                    <form ng-show="showCommentForm">
+                        <label for="author">Author</label>
+                        <input ng-minlength="2" name="author" ng-model="post.title" type="text"  required class="form-control">
+                        <label for="comment">Comment </label>
+                        <input ng-minlength="2" name="comment" ng-model="post.author" type="text"  required class="form-control">
+                    </form>
 
                 </div>
             </div>
@@ -79,6 +89,8 @@
         <script src="https://use.fontawesome.com/47c4710be2.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>
+        <script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment.min.js" charset="utf-8"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/0.10.3/angular-moment.min.js" charset="utf-8"></script>
         <script src="app.js" charset="utf-8"></script>
         <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" charset="utf-8"></script> -->
     </body>
