@@ -1,4 +1,4 @@
-angular.module('redditClone', ['angularMoment'])
+angular.module('redditClone', ['angularMoment', 'ngAnimate'])
 
 .controller('redditController', function ($scope) {
   $scope.posts = [{
@@ -11,7 +11,9 @@ angular.module('redditClone', ['angularMoment'])
     comments: [{
       author: 'Cole Sobel',
       comment: 'Hey, I go there!'
-    }]
+    }],
+    showComments: false,
+    showcommentForm: false
   },
   {
     title: 'Denver',
@@ -23,7 +25,9 @@ angular.module('redditClone', ['angularMoment'])
     comments: [{
       author: 'Cole Sobel',
       comment: 'Hey, I live here!'
-    }]
+    }],
+    showComments: false,
+    showcommentForm: false
   },
   {
     title: 'A Ninja!',
@@ -35,53 +39,60 @@ angular.module('redditClone', ['angularMoment'])
     comments: [{
       author: 'Cole Sobel',
       comment: 'Look, a ninja!'
-    }]
+    }],
+    showComments: false,
+    showcommentForm: false
   }]
 
   $scope.sortingBy = 'votes'
 
 
   $scope.addPost = function () {
-    $scope.showPostForm = true
+    $scope.showPostForm = !$scope.showPostForm
   }
 
   $scope.post = {}
   $scope.comment = {}
 
   $scope.submitPost = function (formName) {
-    $scope.posts.push({
-      title: $scope.post.title,
-      author: $scope.post.author,
-      img: $scope.post.url,
-      description: $scope.post.description,
-      votes: 0,
-      date: new Date().getTime(),
-      comments: []
-    })
-
-    formName.$setPristine()
-    $scope.post = {}
-    $scope.showPostForm = false
-    console.log($scope.posts);
+    if ($scope.post.title.length > 1 && $scope.post.author.length > 1 && $scope.post.description.length > 4) {
+      console.log('should be posting');
+      $scope.posts.push({
+        title: $scope.post.title,
+        author: $scope.post.author,
+        img: $scope.post.url,
+        description: $scope.post.description,
+        votes: 0,
+        date: new Date().getTime(),
+        comments: []
+      })
+      formName.$setPristine()
+      $scope.post = {}
+      $scope.showPostForm = false
+    }
   }
 
   $scope.upVote = function (title) {
-    for (var i = 0; i < $scope.posts[i].title.length; i++) {
+    for (var i = 0; i < $scope.posts.length; i++) {
       if ($scope.posts[i].title == title) {
         $scope.posts[i].votes ++
       }
     }
   }
   $scope.downVote = function (title) {
-    for (var i = 0; i < $scope.posts[i].title.length; i++) {
+    for (var i = 0; i < $scope.posts.length; i++) {
       if ($scope.posts[i].title == title) {
         $scope.posts[i].votes --
       }
     }
   }
 
-  $scope.showPostComments = function () {
-    $scope.showComments = !$scope.showComments
+  $scope.showPostComments = function (title) {
+    for (var i = 0; i < $scope.posts.length; i++) {
+      if ($scope.posts[i].title == title) {
+        $scope.posts[i].showComments = !$scope.posts[i].showComments
+      }
+    }
   }
 
   $scope.submitComment = function (title, form) {
@@ -91,17 +102,26 @@ angular.module('redditClone', ['angularMoment'])
           author: $scope.comment.author,
           comment: $scope.comment.comment
         })
+        $scope.posts[i].showCommentForm = false
+        $scope.posts[i].showComments = true
       }
     }
     form.$setPristine()
     $scope.comment = {}
-    $scope.showCommentForm = false
-    $scope.showComments = true
   }
 
-  $scope.addComment = function () {
-    $scope.showCommentForm = true
-    $scope.showComments = false
+  $scope.addComment = function (title) {
+    for (var i = 0; i < $scope.posts.length; i++) {
+      if ($scope.posts[i].title == title)  {
+        if ($scope.posts[i].showCommentForm === true) {
+          $scope.posts[i].showCommentForm = false
+        } else {
+          $scope.posts[i].showComments = false
+          $scope.posts[i].showCommentForm = true
+        }
+
+      }
+    }
   }
 
   $scope.changeSort = function (sorter) {

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html ng-app="redditClone">
     <head>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" media="screen" title="no title">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css" charset="utf-8">
         <link rel="stylesheet" href="style.css" media="screen" title="no title" charset="utf-8">
         <title>Reddit Clone</title>
 
     </head>
     <body ng-controller="redditController">
-        <nav class="navbar navbar-default">
+        <nav class="navbar navbar-inverse nav-fade">
           <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -44,16 +45,28 @@
 
         <div class="container">
             <form ng-cloak class="form" name="theForm" ng-show="showPostForm" ng-submit="submitPost(theForm)">
-                <label for="title">Title</label>
+                <label for="title" class="dark-text">Title</label>
                 <input ng-minlength="2" name="title" ng-model="post.title" type="text"  required class="form-control">
-                <label for="Author">Author </label>
+                <div class="dark-text" ng-show="theForm.title.$invalid && theForm.title.$dirty">
+                    Please enter a valid title for your post
+                </div>
+                <label class="dark-text" for="Author">Author </label>
                 <input ng-minlength="2" name="author" ng-model="post.author" type="text"  required class="form-control">
-                <label for="Author">Image URL </label>
-                <input ng-minlength="2" name="author" ng-model="post.url" type="url" required class="form-control">
-                <label for="Author">Description</label>
-                <input ng-minlength="2" name="author" ng-model="post.description" type="text" required class="form-control">
+                <div class="dark-text" ng-show="theForm.author.$invalid && theForm.author.$dirty">
+                    Please enter a valid author for your post
+                </div>
+                <label class="dark-text" for="img">Image URL </label>
+                <input name="img" ng-model="post.url" type="url" required class="form-control">
+                <div class="dark-text" ng-show="theForm.img.$invalid && theForm.img.$dirty">
+                    Please enter a valid URL
+                </div>
+                <label class="dark-text" for="description">Description</label>
+                <input ng-minlength="5" name="description" ng-model="post.description" type="text" required class="form-control">
+                <div class="dark-text" ng-show="theForm.description.$invalid && theForm.description.$dirty">
+                    Your description must be at least 5 characters
+                </div>
                 <br>
-                <input type="submit" class="btn btn-default" value="Submit">
+                <input type="submit" class="btn btn-success" value="Submit">
             </form>
 
 
@@ -72,16 +85,23 @@
                             {{post.description}}
                         </div>
                         <div class="footer">
-                            <i class="fa fa-calendar" aria-hidden="true"></i> <span am-time-ago="post.date"></span> | <span ng-click="showPostComments()"><i class="fa fa-comment" aria-hidden="true"></i> {{post.comments.length}} <ng-pluralize count="post.comments.length" when="{'1': 'comment', 'other': 'comments'}"></ng-pluralize> </span>| <span ng-click="addComment(post.title)"> <i class="fa fa-pencil" aria-hidden="true"> </i> Add Comment</span>
-                            <form name="commentForm" ng-show="showCommentForm" ng-submit="submitComment(post.title, commentForm)" class="comment_form">
+                            <i class="fa fa-calendar" aria-hidden="true"></i> <span am-time-ago="post.date"></span> | <span ng-click="showPostComments(post.title)"><i class="fa fa-comment" aria-hidden="true"></i> {{post.comments.length}} <ng-pluralize count="post.comments.length" when="{'1': 'comment', 'other': 'comments'}"></ng-pluralize> </span>| <span ng-click="addComment(post.title)"> <i class="fa fa-pencil" aria-hidden="true"> </i> Add Comment</span>
+                            <form name="commentForm" ng-show="post.showCommentForm" ng-submit="submitComment(post.title, commentForm)" class="comment_form">
                                 <br>
                                 <label for="author">Author</label>
                                 <input ng-minlength="2" name="author" ng-model="comment.author" type="text"  required class="form-control">
+                                <div ng-show="commentForm.author.$invalid && theForm.author.$dirty">
+                                    Author name must be at least 2 characters
+                                </div>
                                 <label for="comment">Comment </label>
-                                <input ng-minlength="2" name="comment" ng-model="comment.comment" type="text"  required class="form-control">
-                                <input type="submit" value="Add Comment">
+                                <input ng-minlength="5" name="comment" ng-model="comment.comment" type="text"  required class="form-control">
+                                <div ng-show="commentForm.comment.$invalid && theForm.comment.$dirty">
+                                    Your comment must be at least 5 characters
+                                </div>
+                                <br>
+                                <input type="submit" value="Add Comment" class="btn btn-success">
                             </form>
-                            <div ng-show="showComments">
+                            <div ng-show="post.showComments">
                                 <div class="comments" ng-repeat="comment in post.comments">
                                     <br>
                                     <p>
